@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encargado</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/Encargado/alimentacionGrupoE.css">
+</head>
+<body class="bg-light">
+
+    <!-- Barra lateral -->
+    <div class="sidebar">
+        <div class="menu-item" onclick="mostrarSeccion('ganado')">
+            <img src="/static/logos/GestionGanado.png" alt="Ganado" class="menu-icon">
+            <span>Gestión de Ganado</span>
+        </div>
+        <div class="menu-item" onclick="mostrarSeccion('alimentacion')">
+            <img src="/static/logos/GestionAlimentacion.png" alt="Alimentación" class="menu-icon">
+            <span>Gestión de Alimentación</span>
+        </div>
+        <div class="menu-item" onclick="mostrarSeccion('vinculacion')">
+            <img src="/static/logos/AlimentacionPorGrupo.png" alt="Vinculación" class="menu-icon">
+            <span>Alimentación por Grupo</span>
+        </div>
+        <div class="menu-item" onclick="mostrarSeccion('alertas')">
+            <img src="/static/logos/AlertasAgua.png" alt="Alertas" class="menu-icon">
+            <span>Alertas de Agua</span>
+        </div>
+        <div class="menu-item" onclick="mostrarSeccion('cerrar')">
+            <img src="/static/logos/CerrarSesion.png" alt="Cerrar sesión" class="menu-icon">
+            <span>Cerrar Sesión</span>
+        </div>
+    </div>
+        <!-- Área de contenido -->
+    <div class="content-area">
+        <h1 class="text-left">RanchMaster</h1>
+
+        <!-- Título principal -->
+        <h1>Gestión de Alimentación por Grupo</h1>
+
+        <!-- Botones principales -->
+        <div class="boton-accion">
+            <button id="btnConsultarAlimentacionRegistrada" class="boton-personalizado" onclick="ocultarTodosLosContenedores(),consultarAlimentacion()">Ver Alimentación Registrada</button>
+        </div>
+        <div class="boton-accion">
+            <button id="btnVerAlimentacionGanado" class="boton-personalizado" onclick="ocultarTodosLosContenedores(),mostrarbloques()">Ver Alimentación del Ganado</button>
+        </div>
+        <div class="boton-accion">
+            <button id="btnMostrarVinculacion" class="boton-personalizado" onclick="ocultarTodosLosContenedores(),mostrarCamposVinculacion()">Vincular Alimentación</button>
+        </div>
+        <div class="boton-accion">
+            <button id="btnModificarAlimentacion" class="boton-personalizado" onclick="ocultarTodosLosContenedores(),modificarAlimentacion()">Modificar Alimentación</button>
+        </div>
+        <div>
+            <button class="boton-volver mb-4" id="btnVolverAlMenu" onclick="volverAlMenu()">Volver</button>
+        </div>
+
+        <!-- Contenedor para Ver Alimentación Registrada -->
+        <div id="tablaAlimentacion" style="display: none;">
+        <table id="tablaAlimentacionRegistrada" class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Tipo de Alimento</th>
+                <th>Cantidad (kg)</th>
+                <th>Frecuencia</th>
+                <th>Fecha de Registro</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Las filas se insertarán dinámicamente -->
+        </tbody>
+        </table>
+        <p id="mensajeNoEncontradoAlimentacionRegistrada" class="text-center text-muted" style="display: none;">Información no registrada.</p>
+        </div>
+            <!-- Contenedor para Ver Alimentación del Ganado por ID -->
+            <div id="contenedorConsultaAlimentacion" style="display: none;">
+            <label for="inputIDGanado">Ingrese el ID de Ganado:</label>
+            <input type="text" id="inputIDGanado" placeholder="ID Ganado">
+            <button id="btnConsultarAlimentacionGanado" clas="boton-personalizado" onclick="consultarAlimentacionGanado()">Buscar</button>
+
+            <table id="tablaAlimentacionGanado" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>ID Alimentación</th>
+                    <th>Tipo de Alimento</th>
+                    <th>Cantidad</th>
+                    <th>Frecuencia</th>
+                    <th>Fecha de Registro</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Filas de la tabla generadas dinámicamente -->
+            </tbody>
+            </table>
+            <p id="mensajeNoEncontradoAlimentacionGanado" class="text-center text-muted" style="display: none;">Información no registrada.</p>
+            </div>
+        
+            <!-- Contenedor para Vincular Alimentación (oculto inicialmente) -->
+            <div id="vincularAlimentacionContainer" style="display: none;">
+                <h2>Vincular Alimentación</h2>
+            
+                <!-- Campo para ingresar el ID del ganado -->
+                <div class="mb-3">
+                    <label for="inputIDGanadoVincular" class="form-label">ID del Ganado:</label>
+                    <input type="text" id="inputIDGanadoVincular" class="form-control" placeholder="Ingrese el ID del ganado">
+                    <!-- Aquí se asegura que todos los contenedores se ocultan antes de mostrar el de vinculación -->
+                    <button id="btnBuscarGanado" type="button" class="btn btn-primary" 
+                        onclick="mostrarVincularAlimentacion()">Buscar</button>
+                    </div>
+            
+                <!-- Campos para la vinculación que estarán ocultos inicialmente -->
+                <div id="camposVinculacion" style="display: none;">
+                    <div class="mb-3">
+                        <label for="inputIDAlimentacionVincular" class="form-label">ID de la Alimentación:</label>
+                        <input type="text" id="inputIDAlimentacionVincular" class="form-control" placeholder="Ingrese el ID de la alimentación">
+                    </div>
+                    <button id="btnVincularAlimentacion" type="button" class="btn btn-success" onclick="vincularAlimentacion()">Vincular</button>
+                    <p id="mensajeVinculacionExitosa" class="text-success" style="display: none;">Vinculación exitosa.</p>
+                </div>
+            </div>
+            
+
+            <!-- Contenedor para Modificar Alimento -->
+            <div id="modificarAlimentacionContainer" style="display: none;">
+            <h2>Modificar Alimento</h2>
+            <form id="formModificarAlimento">
+                <div class="mb-3">
+                    <label for="inputIDGanadoModificar" class="form-label">ID del Ganado:</label>
+                    <input type="number" id="inputIDGanadoModificar" class="form-control" placeholder="Ingrese el ID del ganado">
+                </div>
+
+                <button id="btnBuscarAlimentacion" class="boton-personalizado" onclick="buscarAlimentacion()">Buscar</button>
+
+                <!-- Tabla para mostrar la alimentación -->
+                <table id="tablaAlimentacionModificar" class="table table-bordered table-striped" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>ID Alimentación</th>
+                            <th>Tipo de Alimento</th>
+                            <th>Cantidad (kg)</th>
+                            <th>Frecuencia</th>
+                            <th>Fecha de Registro</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Filas de la tabla generadas dinámicamente -->
+                    </tbody>
+                </table>
+                <p id="mensajeNoEncontradoAlimentacion" class="text-center text-muted" style="display: none;">Información no registrada.</p>
+            </form>
+            </div>
+        </div>
+
+    <!-- Scripts de Bootstrap y JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="/static/js/Encargado/alimentacionGrupoE.js"></script>
+</body>
+</html>

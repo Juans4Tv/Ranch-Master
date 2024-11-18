@@ -1,0 +1,94 @@
+/* Eliminar margen y padding del body para evitar desplazamiento */
+body, html {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Logro evitar una barra de desplazamiento horizontal */
+    width: 100%;
+    height: 100%;
+}
+
+/* Ajuste del contenedor principal para ocupar el 100% de la pantalla */
+.d-flex.min-vh-100 {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Imagen de fondo para ocupar todo el contenedor */
+.bg-image-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.bg-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Texto flotante sobre la imagen */
+.floating-text {
+    position: absolute;
+    bottom: 5%; /* Ajusta según la posición deseada */
+    left: 25%; /* Ajusta según la posición deseada */
+    background-color: rgba(52, 51, 51, 0.6);
+    color: #fff;
+    padding: 20px;
+    border-radius: 20px;
+    font-size: 1.4rem;
+    max-width: 80%;
+    box-sizing: border-box;
+}
+
+/* Sección de bienvenida para pantallas medianas y pequeñas */
+@media (max-width: 1230px) {
+    .bg-image-container {
+        display: none;
+    }
+
+    .welcome-section {
+        background-image: url("/Imagenes/RanchoRanchMaster2.jpg");
+        background-size: cover;
+        background-position: center;
+        color: #fff;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+        width: 100%;
+        height: 100vh;
+    }
+}
+
+/* Ajuste de tamaño del logo en pantallas pequeñas */
+.logo {
+    max-width: 100%;
+    width: 150px; /* Tamaño base */
+}
+
+@media (max-width: 1440px) {
+    .logo {
+        width: 300px;
+    }
+}
+
+@media (max-width: 576px) {
+    .logo {
+        width: 200px;
+    }
+}
+
+@media (max-width: 356px) {
+    .logo {
+        width: 150px;
+    }
+}
+
+/* Ajuste de tamaño del texto en pantallas grandes */
+@media (min-width: 1230px) {
+    .welcome-section h1 {
+        font-size: 2.5rem;
+    }
+
+    .welcome-section p {
+        font-size: 1.25rem;
+    }
+}

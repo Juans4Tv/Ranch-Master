@@ -1,0 +1,8 @@
+Supongo que no tienes nada instalado asi que 
+primero instalate python y despues despues por consola lo siguiente:
+
+pip install Flask
+pip install flask-mysqldb
+
+no se olvide instalar my sql para trabajar la base de datos, tambien en la partde de app.py tendras
+que cambiar tu usuario o tu contraseña dependiendo que pusiste

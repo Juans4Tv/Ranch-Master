@@ -1,0 +1,73 @@
+/* Imagen de fondo */
+.bg-image-container {
+    position: relative;
+}
+
+.bg-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+/* Texto sobre la imagen */
+.floating-text {
+    position: absolute;
+    bottom: 750px; /* Ajusta según la posición deseada */
+    left: 60px; /* Ajusta según la posición deseada */
+    background-color: rgba(52, 51, 51, 0.6); /* Fondo negro semitransparente */
+    color: #fff; /* Texto blanco */
+    padding: 20px 20px; /*Tamaño del texto */
+    border-radius: 20px; /*Forma de la curva del texto*/
+    font-size: 1.4rem; /*Tamaño del texto*/
+    max-width: 80%; /* Limita el ancho de la imagen */
+    box-sizing: border-box;
+}
+
+/* Sección de bienvenida con imagen de fondo para pantallas medianas y pequeñas */
+@media (max-width: 1230px) {
+    .bg-image-container {
+        display: none;
+    }
+
+    .welcome-section {
+        background-image: url("/Imagenes/InicioSesion.jpg");
+        background-size: cover;
+        background-position: center;
+        color: #fff;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+        width: 100%;
+    }
+}
+
+/* Ajuste de tamaño del logo en pantallas usando Bootstrap */
+.logo {
+    max-width: 100%;
+    width: 150px; /* Tamaño base */
+
+    /* Tamaños en cada punto de ruptura */
+}
+@media (max-width: 1440px) {
+    .logo {
+        width: 300px;
+    }
+}
+@media (max-width: 576px) {
+    .logo {
+        width: 200px;
+    }
+}
+@media (max-width: 356px) {
+    .logo {
+        width: 150px;
+    }
+}
+
+/* Texto en pantallas grandes */
+@media (min-width: 1230px) {
+    .welcome-section h1 {
+        font-size: 2.5rem;
+    }
+
+    .welcome-section p {
+        font-size: 1.25rem;
+    }
+}

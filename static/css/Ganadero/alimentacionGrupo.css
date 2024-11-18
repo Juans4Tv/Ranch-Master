@@ -1,0 +1,455 @@
+/* General */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    background-color: #ffffff; /* Fondo claro */
+}
+
+/* Barra superior */
+.text-left {
+    font-size: 4rem;
+    color: #90774b; /* Café que ya usaste */
+    background: linear-gradient(90deg, #ffffff, #ffffff, #90774b, #ffffff);
+}
+
+.text-left::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 4px;
+    background-color: #90774b; /* Línea café */
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100%;
+    background-color: #bda66e; /* Café claro */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.sidebar::after {
+    content: "";
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #ffffff, #ffffff, #b08e4a);
+    margin: 40px 0 20px;
+    display: block;
+}
+
+/* Menú */
+.menu-item {
+    width: 100%;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    text-align: left;
+    cursor: pointer;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin: 10px 0;
+    transition: background-color 0.3s ease;
+}
+
+.menu-item:hover {
+    background-color: #90774b; /* Fondo más oscuro */
+}
+
+.menu-icon {
+    width: 35px;
+    height: 35px;
+    filter: brightness(0); /* Íconos negros */
+}
+
+/* Área de contenido */
+.content-area {
+    margin-left: 250px; /* Desplaza el contenido principal */
+    padding: 20px;
+    min-height: 100vh; /* Altura completa */
+    background-color: #ffffff; /* Fondo claro */
+    box-sizing: border-box;
+}
+
+/* Botones personalizados */
+.boton-personalizado {
+    background-color: #90774b; /* Café oscuro */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1.1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 10px;
+}
+
+.boton-personalizado:hover {
+    background-color: #bda66e; /* Café claro */
+}
+
+/* Botones de acción */
+.boton-accion {
+    display: inline-block;
+    width: 200px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Botón volver */
+.boton-volver {
+    display: inline-block;
+    margin-top: 20px;
+    background-color: white;
+    color: #90774b; /* Café principal */
+    border: 2px solid #90774b;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.boton-volver:hover {
+    background-color: #90774b;
+    color: white;
+}
+
+/* Inputs para registrar alimentación */
+#alimentacionInputs input {
+    display: block;
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    margin: 10px auto;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* Contenedor de la tabla de alimentación */
+#tablaAlimentacion, #tablaAlimentacionRegistrada, #tablaAlimentacionGanado {
+    margin-top: 20px;
+}
+
+#tablaAlimentacion h2, #tablaAlimentacionRegistrada h2, #tablaAlimentacionGanado h2 {
+    font-size: 1.5rem;
+    color: #90774b;
+    margin-bottom: 15px;
+}
+
+/* Tablas de alimentación */
+#tablaAlimentacion, #tablaAlimentacionRegistrada, #tablaAlimentacionGanado {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#tablaAlimentacion th, #tablaAlimentacion td,
+#tablaAlimentacionRegistrada th, #tablaAlimentacionRegistrada td,
+#tablaAlimentacionGanado th, #tablaAlimentacionGanado td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+#tablaAlimentacion th, #tablaAlimentacionRegistrada th, #tablaAlimentacionGanado th {
+    background-color: #90774b; /* Fondo encabezado */
+    color: white;
+    font-weight: bold;
+}
+
+#tablaAlimentacion tbody tr:nth-child(even),
+#tablaAlimentacionRegistrada tbody tr:nth-child(even),
+#tablaAlimentacionGanado tbody tr:nth-child(even) {
+    background-color: #f7f7f7; /* Fondo para filas pares */
+}
+
+/* Mensaje de "No Encontrado" */
+#mensajeNoEncontradoAlimentacion, #mensajeNoEncontradoAlimentacionRegistrada, #mensajeNoEncontradoAlimentacionGanado {
+    color: #a3aab1;
+    font-size: 1.2rem;
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Contenedor de modificar alimentación */
+#modificarAlimentacionContainer {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Inputs para modificar alimentación */
+#modificarAlimentacionContainer input {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    margin: 10px auto;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+#modificarAlimentacionContainer button {
+    background-color: #90774b;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#modificarAlimentacionContainer button:hover {
+    background-color: #bda66e;
+}
+
+/* Estilos generales para el contenedor */
+#contenedorConsultaAlimentacion {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo de las etiquetas */
+#contenedorConsultaAlimentacion label {
+    font-weight: bold;
+    font-size: 18px;
+    color: #333;
+    display: block;
+    margin-bottom: 10px;
+}
+
+/* Estilo para el campo de entrada de texto */
+#contenedorConsultaAlimentacion input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Estilo para el botón */
+#contenedorConsultaAlimentacion button {
+    background-color: #a58b60;
+    color: #fff;
+    font-size: 16px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+#contenedorConsultaAlimentacion button:hover {
+    background-color: #8c7350;
+}
+
+/* Estilo para la tabla */
+#tablaAlimentacionGanado {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+#tablaAlimentacionGanado th,
+#tablaAlimentacionGanado td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+#tablaAlimentacionGanado th {
+    background-color: #f0e7db;
+    color: #333;
+    font-weight: bold;
+}
+
+#tablaAlimentacionGanado tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Mensaje cuando no se encuentran registros */
+#mensajeNoEncontradoAlimentacionGanado {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #666;
+}
+
+/* Estilo para el contenedor de vinculación */
+#vincularAlimentacionContainer {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#vincularAlimentacionContainer h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+#vincularAlimentacionContainer .form-label {
+    font-weight: bold;
+    font-size: 16px;
+    color: #333;
+}
+
+#vincularAlimentacionContainer input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#vincularAlimentacionContainer button {
+    background-color: #a58b60;
+    color: #fff;
+    font-size: 16px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#mensajeVinculacionExitosa {
+    margin-top: 15px;
+    font-size: 16px;
+    color: #c6944f;
+    display: none;
+}
+#tablaAlimentacionModificar {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+#tablaAlimentacionModificar th,
+#tablaAlimentacionModificar td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+#tablaAlimentacionModificar th {
+    background-color: #f0e7db;
+    color: #333;
+    font-weight: bold;
+}
+
+#tablaAlimentacionModificar tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Contenedor del botón y tabla */
+#contenedorConsultaAlimentacionGanado {
+    text-align: center;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f8f9fa; /* Fondo suave */
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Tabla de alimentación */
+#tablaAlimentacionGanado {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+#tablaAlimentacionGanado th, 
+#tablaAlimentacionGanado td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+#tablaAlimentacionGanado th {
+    background-color: #90774b; /* Café oscuro */
+    color: white;
+    font-weight: bold;
+}
+
+#tablaAlimentacionGanado tbody tr:nth-child(even) {
+    background-color: #f9f9f9; /* Fondo suave para filas pares */
+}
+
+/* Mensaje de no datos */
+#mensajeNoDatosGanado {
+    color: #666;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+/* Botón */
+.boton-personalizado {
+    background-color: #90774b;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.boton-personalizado:hover {
+    background-color: #bda66e;
+}
+/* Contenedor para eliminar alimentación */
+#eliminarAlimentacionContainer {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+#eliminarAlimentacionContainer h2 {
+    font-size: 1.5rem;
+    color: #90774b;
+    margin-bottom: 15px;
+}
+
+#eliminarAlimentacionContainer label {
+    display: block;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    margin: 10px 0 5px;
+}
+
+#eliminarAlimentacionContainer input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}

@@ -1,0 +1,223 @@
+/* General */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    background-color: #ffffff; /* Fondo claro */
+}
+
+/* Barra superior */
+.text-left {
+    font-size: 4rem;
+    color: #90774b; /* Café que ya usaste */
+    background: linear-gradient(90deg, #ffffff, #ffffff, #90774b, #ffffff);
+}
+
+.text-left::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 4px;
+    background-color: #90774b; /* Línea café */
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100%;
+    background-color: #bda66e; /* Café claro */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+/* Espacio para el contenido principal */
+.content-area {
+    margin-left: 250px; /* Desplaza el contenido principal */
+    padding: 20px;
+    min-height: 100vh; /* Altura completa */
+    background-color: #ffffff; /* Fondo claro */
+    box-sizing: border-box;
+}
+
+/* Menú */
+.menu-item {
+    width: 100%;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    text-align: left;
+    cursor: pointer;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin: 10px 0;
+    transition: background-color 0.3s ease;
+}
+
+.menu-item:hover {
+    background-color: #90774b; /* Fondo más oscuro */
+}
+
+/* Iconos de menú */
+.menu-icon {
+    width: 35px;
+    height: 35px;
+    filter: brightness(0); /* Íconos negros */
+}
+/* Línea debajo del título */
+.sidebar::after {
+    content: "";
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #ffffff, #ffffff, #b08e4a);
+    margin: 40px 0 20px;
+    display: block;
+}
+
+/* Área de contenido */
+.content-area {
+    margin-left: 250px; /* Desplaza el contenido principal */
+    padding: 20px;
+    min-height: 100vh; /* Altura completa */
+    background-color: #ffffff; /* Fondo claro */
+    box-sizing: border-box;
+}
+
+/* Botones personalizados */
+.boton-personalizado {
+    background-color: #90774b; /* Café oscuro */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1.1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 10px;
+}
+
+.boton-personalizado:hover {
+    background-color: #bda66e; /* Café claro */
+}
+
+/* Botones de acción */
+.boton-accion {
+    display: inline-block;
+    width: 200px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Botón volver */
+.boton-volver {
+    display: inline-block;
+    margin-top: 20px;
+    background-color: white;
+    color: #90774b; /* Café principal */
+    border: 2px solid #90774b;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.boton-volver:hover {
+    background-color: #90774b;
+    color: white;
+}
+
+/* Contenedor de tabla */
+.tabla-ganado-container {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #ffffff; /* Fondo blanco */
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tabla-ganado-container h2 {
+    color: #90774b; /* Café principal */
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    text-align: left;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #90774b; /* Café principal */
+    color: white;
+}
+
+#registroGanadoContainer table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#registroGanadoContainer table td {
+    padding: 10px 5px;
+    vertical-align: middle;
+}
+
+#registroGanadoContainer label {
+    color: #5a5a5af3; /* Color gris oscuro */
+    font-weight: bold;
+}
+
+#registroGanadoContainer input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #cccccc; /* Borde claro */
+    border-radius: 4px; /* Bordes redondeados */
+    box-sizing: border-box; /* Asegura un espaciado consistente */
+}
+
+/* General Styling */
+body {
+    font-family: Arial, sans-serif;
+}
+
+/* Contenedor Principal */
+#eliminarGanadoContainer {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    width: 400px;
+    margin: auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}

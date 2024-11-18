@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ganadero</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/Ganadero/ganado.css">
+</head>
+<body class="bg-light">
+    <!-- Barra lateral -->
+    <div class="sidebar">
+        <div class="menu-item" onclick="mostrarSeccion('ganado')">
+            <img src="/static/logos/GestionGanado.png" alt="Ganado" class="menu-icon">
+            <span>Gestión de Ganado</span>
+        </div>
+        <div class="menu-item" onclick="mostrarSeccion('alimentacion')">
+            <img src="/static/logos/GestionAlimentacion.png" alt="Alimentación" class="menu-icon">
+            <span>Gestión de Alimentación</span>
+        </div>
+        <div class="menu-item" onclick="mostrarSeccion('vinculacion')">
+            <img src="/static/logos/AlimentacionPorGrupo.png" alt="Vinculación" class="menu-icon">
+            <span>Alimentación por Grupo</span>
+        </div>
+        <div class="menu-item" onclick="mostrarSeccion('alertas')">
+            <img src="/static/logos/AlertasAgua.png" alt="Alertas" class="menu-icon">
+            <span>Alertas de Agua</span>
+        </div>
+        <div class="menu-item" onclick="mostrarSeccion('cerrar')">
+            <img src="/static/logos/CerrarSesion.png" alt="Cerrar sesión" class="menu-icon">
+            <span>Cerrar Sesión</span>
+        </div>
+    </div>
+        <!-- Área de contenido -->
+    <div class="content-area">
+        <h1 class="text-left">RanchMaster</h1>
+
+        <!-- Título principal -->
+        <h1>Gestion de Ganado </h1>
+
+        <!-- Sección de botones principales -->
+        <div class="boton-accion">
+            <button class="boton-personalizado" id="btnRegistrarGanado" onclick="ocultarTodosLosContenedores(),registrarGanado()" class="boton-personalizado">Registrar Nueva Res</button>
+        </div>
+        <div class="boton-accion">
+            <button class="boton-personalizado" onclick="ocultarTodosLosContenedores(),consultarGanado()">Consultar Ganado</button>
+        </div>
+        <div class="boton-accion">
+            <button onclick="ocultarTodosLosContenedores(),modificarGanado()" class="boton-personalizado">Modificar datos del Ganado</button>
+        </div>
+        <div class="boton-accion">
+            <button id="btnEliminarGanado" class="boton-personalizado" onclick="ocultarTodosLosContenedores(),eliminarGanado()">Eliminar Gando por ID</button>
+        </div>
+        <div>
+            <button class="boton-volver mb-4" onclick="volverAlMenu()">Volver</button>
+        </div>
+
+        <!-- Contenedor para registrar ganado -->
+        <div id="registroGanadoContainer" style="display: none;">
+            <h2>Registrar Ganado</h2>
+            <table>
+                <tr>
+                    <td><label for="razaGanado">Raza del Ganado:</label></td>
+                    <td><input type="text" id="razaGanado" placeholder="Ingrese la raza del ganado"></td>
+                </tr>
+                <tr>
+                    <td><label for="edadGanado">Edad del Ganado:</label></td>
+                    <td><input type="number" id="edadGanado" placeholder="Ingrese la edad del ganado"></td>
+                </tr>
+                <tr>
+                    <td><label for="pesoGanado">Peso del Ganado (kg):</label></td>
+                    <td><input type="number" id="pesoGanado" placeholder="Ingrese el peso del ganado"></td>
+                </tr>
+                <tr>
+                    <td><label for="estadoSalud">Estado de Salud:</label></td>
+                    <td><input type="text" id="estadoSalud" placeholder="Ingrese el estado de salud"></td>
+                </tr>
+                </tr>
+                <!-- Nueva fila para el botón de Guardar -->
+                <tr>
+                <td colspan="2" style="text-align: center;">
+                    <button id="btnGuardarGanado" class="boton-personalizado">Guardar</button>
+                </td>
+            </table>
+        </div>
+
+            <!-- Contenedor de la tabla -->
+            <div id="contenedorTablaGanado" class="tabla-ganado-container d-none">
+                <h2>Consulta de Ganado</h2>
+                <table id="tablaGanado">
+                    <thead>
+                        <tr>
+                            <th>Raza</th>
+                            <th>Edad</th>
+                            <th>Peso</th>
+                            <th>Estado</th>
+                            <th>ID Usuario</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Filas generadas dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Contenedor para modificar datos del ganado -->
+            <div id="modificarGanadoContainer" style="display: none;">
+                <h2>Modificar Datos del Ganado</h2>
+                <table>
+                    <!-- Fila para ingresar el ID -->
+                    <tr>
+                        <td><label for="idGanado">ID del Ganado:</label></td>
+                        <td><input type="text" id="idGanado" placeholder="Ingrese el ID del ganado"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="text-align: center;">
+                            <button id="btnBuscarGanado" class="boton-personalizado">Buscar</button>
+                        </td>
+                    </tr>
+                    <!-- Fila de inputs para modificar datos (inicialmente ocultos) -->
+                    <tr id="filaModificarRaza" style="display: none;">
+                        <td><label for="modificarRazaGanado">Raza del Ganado:</label></td>
+                        <td><input type="text" id="modificarRazaGanado" placeholder="Ingrese la raza del ganado"></td>
+                    </tr>
+                    <tr id="filaModificarEdad" style="display: none;">
+                        <td><label for="modificarEdadGanado">Edad del Ganado:</label></td>
+                        <td><input type="number" id="modificarEdadGanado" placeholder="Ingrese la edad del ganado"></td>
+                    </tr>
+                    <tr id="filaModificarPeso" style="display: none;">
+                        <td><label for="modificarPesoGanado">Peso del Ganado (kg):</label></td>
+                        <td><input type="number" id="modificarPesoGanado" placeholder="Ingrese el peso del ganado"></td>
+                    </tr>
+                    <tr id="filaModificarEstado" style="display: none;">
+                        <td><label for="modificarEstadoSalud">Estado de Salud:</label></td>
+                        <td><input type="text" id="modificarEstadoSalud" placeholder="Ingrese el estado de salud"></td>
+                    </tr>
+                    <tr id="filaGuardarCambios" style="display: none;">
+                        <td colspan="2" style="text-align: center;">
+                            <button id="btnGuardarCambiosGanado" class="boton-personalizado">Guardar Cambios</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <!-- Contenedor para eliminar datos del ganado -->
+            <div id="eliminarGanadoContainer" style="display: none;">
+                <h2>Eliminar Ganado</h2>
+                <!-- Fila para ingresar el ID -->
+                <label for="idGanadoEliminar">ID del Ganado:</label>
+                <input type="text" id="idGanadoEliminar" placeholder="Ingrese el ID del ganado">
+                <button id="btnConfirmarEliminar" class="boton-personalizado">Confirmar</button>
+            </div>
+    <!-- Scripts de Bootstrap y JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="/static/js/Ganadero/ganado.js"></script>
+</body>
+</html>
