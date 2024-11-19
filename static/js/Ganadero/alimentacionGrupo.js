@@ -1,19 +1,19 @@
 function mostrarSeccio(seccion) {
     switch (seccion) {
         case 'ganado':
-            window.location.href = '/Ganadero/ganado.html';
+            window.location.href = 'http://127.0.0.1:5000/ganadero/ganado';
             break;
         case 'alimentacion':
-            window.location.href = '/Ganadero/alimentacion.html';
+            window.location.href = 'http://127.0.0.1:5000/ganadero/alimentacion';
             break;
         case 'alertas':
-            window.location.href = '/Ganadero/alertasAgua.html';
+            window.location.href = 'http://127.0.0.1:5000/ganadero/alertas';
             break;
         case 'cerrar':
-            window.location.href = '/IniciarSesion.html';
+            window.location.href = 'http://127.0.0.1:5000/login';
             break;
         default:
-            window.location.href = '/Ganadero/alimentacionGrupo.html';
+            window.location.href = 'http://127.0.0.1:5000/ganadero/alimentaciongrupo';
             break;
     }
 }
