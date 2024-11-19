@@ -27,7 +27,6 @@ def consulta(tableName):
     cur.close()  # Cerramos el cursor para liberar recursos
     return account
 
-
 def consultar_alimentacion_ganado(id):
     query = """SELECT a.id_alimentacion, a.tipo_alimento, a.cantidad, a.frecuencia, a.fecha_registro
         FROM ganado g
@@ -47,9 +46,6 @@ def consultar_estado():
     account = cur.fetchall()  # Recuperamos todos los registros
     cur.close()  # Cerramos el cursor para liberar recursos    
     return account
-
-
-
 
 def registro(tabla,tipo_agua,cantidad_estado,frecuencia,fecha,id_usuario):
     cur = mysql.connection.cursor()
@@ -157,6 +153,35 @@ def datosGenerales():
     cur.close()
     return consultar
 
+def eliminar(tabla,id,id_ex=0):
+
+        cur= mysql.connection.cursor()    
+        if tabla=='ganado':
+            query="DELETE FROM alimentacion_ganado WHERE id_ganado = %s"
+            cur.execute(query,(id,))
+            mysql.connection.commit() 
+            query="DELETE FROM ganado WHERE id_ganado = %s"
+            cur.execute(query,(id,))
+            mysql.connection.commit()
+        elif tabla=='alimentacion':
+            query="DELETE FROM alimentacion_ganado WHERE id_alimentacion = %s"
+            cur.execute(query,(id,))
+            mysql.connection.commit() 
+            query="DELETE FROM alimentacion WHERE id_alimentacion = %s"
+            cur.execute(query,(id,))
+            mysql.connection.commit()
+        elif tabla=='vinculacion':
+            query="DELETE FROM alimentacion_ganado WHERE id_alimentacion = %s AND id_ganado = %s"
+            cur.execute(query,(id,id_ex))
+            mysql.connection.commit() 
+
+             
+            if cur.rowcount > 0:
+                    resultado = {'success': True, 'message': 'actualizacion modificado correctamente'}
+            else:
+                    resultado = {'success': False, 'message': 'No se encontró un registro con el ID proporcionado'}
+            cur.close()
+            return resultado
 
 
 #consultas propias del ganadero

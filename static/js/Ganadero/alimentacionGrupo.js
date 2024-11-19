@@ -42,11 +42,7 @@ document.getElementById("btnConsultarAlimentacionGanado").onclick = function() {
     document.getElementById("contenedorConsultaAlimentacion").style.display = "block"; // Muestra solo el contenedor de consulta
 };
 
-// Botón de la sección de vinculación de alimentación
-document.getElementById("btnVincularAlimentacion").onclick = function() {
-    ocultarTodosLosContenedores(); // Oculta todos los contenedores
-    document.getElementById("vincularAlimentacionContainer").style.display = "block"; // Muestra solo el contenedor de vinculación
-};
+
 
 // Botón de la sección de modificación de alimento
 document.getElementById("btnModificarAlimentacion").onclick = function() {
@@ -69,7 +65,7 @@ function volverAlMenu() {
 
     if (!algunContenedorVisible) {
         // Redirige al menú principal
-        window.location.href = "/Encargado.html";
+        window.location.href = "http://127.0.0.1:5000/ganadero";
     } else {
         // Oculta todos los contenedores visibles
         contenedores.forEach(contenedor => {
@@ -82,83 +78,59 @@ function volverAlMenu() {
 
 
 // Función para consultar la alimentación registrada
-function consultarAlimentacion() {
+async function consultarAlimentacion() {
     ocultarTodosLosContenedores();
     document.getElementById("tablaAlimentacion").style.display = "block";
 
     const mensajeNoEncontradoAlimentacion = document.getElementById("mensajeNoEncontradoAlimentacionRegistrada");
     const tbody = document.querySelector("#tablaAlimentacionRegistrada tbody");
 
-    // Solicitar datos desde el archivo JSON
-    fetch("/data/alimentacionRegistrada.json")
-        .then((response) => response.json())
-        .then((data) => {
-            tbody.innerHTML = ""; // Limpiar la tabla antes de llenarla
-
-            if (data.length === 0) {
-                mensajeNoEncontradoAlimentacion.style.display = "block";
-            } else {
-                mensajeNoEncontradoAlimentacion.style.display = "none"; // Ocultar el mensaje
-
-                data.forEach((registro) => {
-                    const fila = document.createElement("tr");
-                    fila.innerHTML = `
-                        <td>${registro.id || "N/A"}</td>
-                        <td>${registro.tipo || "N/A"}</td>
-                        <td>${registro.cantidad || "N/A"}</td>
-                        <td>${registro.frecuencia || "N/A"}</td>
-                        <td>${registro.fecha || "N/A"}</td>
-                    `;
-                    tbody.appendChild(fila);
-                });
-            }
-        })
-        .catch((error) => {
-            console.error("Error al obtener los datos de alimentación registrada:", error);
-            mensajeNoEncontradoAlimentacion.style.display = "block";
+    try {
+        // Solicitar datos desde el archivo JSON
+        const userData = { name: 'alimentacion' };
+        const response = await fetch('http://127.0.0.1:5000/ganadero/consultas', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
         });
+        
+        if (!response.ok) {
+            throw new Error("No se pudo obtener los datos");
+        }
+
+        const data = await response.json();
+        tbody.innerHTML = ""; // Limpiar la tabla antes de llenarla
+
+        if (data.length === 0) {
+            mensajeNoEncontradoAlimentacion.style.display = "block";
+        } else {
+            mensajeNoEncontradoAlimentacion.style.display = "none"; // Ocultar el mensaje
+
+            data.forEach((registro) => {
+                const fila = document.createElement("tr");
+                fila.innerHTML = `
+                    <td>${registro.id_alimentacion || "N/A"}</td>
+                    <td>${registro.tipo_alimento || "N/A"}</td>
+                    <td>${registro.cantidad || "N/A"}</td>
+                    <td>${registro.frecuencia || "N/A"}</td>
+                    <td>${registro.fecha_registro || "N/A"}</td>
+                `;
+                tbody.appendChild(fila);
+            });
+        }
+    } catch (error) {
+        console.error("Error al obtener los datos de alimentación registrada:", error);
+        mensajeNoEncontradoAlimentacion.style.display = "block";
+    }
 }
 
-// Función para consultar la alimentación por ID
-function consultarAlimentacionGanado() {
-    ocultarTodosLosContenedores();
+function mostrarbloques(){
     document.getElementById("contenedorConsultaAlimentacion").style.display = "block";
-
-    const mensajeNoEncontradoAlimentacion = document.getElementById("mensajeNoEncontradoAlimentacionGanado");
-    const tbody = document.querySelector("#tablaAlimentacionGanado tbody");
-    const idGanado = document.getElementById("inputIDGanado").value.trim();
-
-    // Solicitar datos desde el archivo JSON
-    fetch("/data/alimentacionGanado.json")
-        .then((response) => response.json())
-        .then((data) => {
-            tbody.innerHTML = ""; // Limpiar la tabla antes de llenarla
-
-            const registros = data.filter((registro) => registro.id === idGanado);
-
-            if (registros.length === 0) {
-                mensajeNoEncontradoAlimentacion.style.display = "block";
-            } else {
-                mensajeNoEncontradoAlimentacion.style.display = "none"; // Ocultar el mensaje
-
-                registros.forEach((registro) => {
-                    const fila = document.createElement("tr");
-                    fila.innerHTML = `
-                        <td>${registro.id || "N/A"}</td>
-                        <td>${registro.tipo || "N/A"}</td>
-                        <td>${registro.cantidad || "N/A"}</td>
-                        <td>${registro.frecuencia || "N/A"}</td>
-                        <td>${registro.fecha || "N/A"}</td>
-                    `;
-                    tbody.appendChild(fila);
-                });
-            }
-        })
-        .catch((error) => {
-            console.error("Error al obtener los datos de alimentación del ganado:", error);
-            mensajeNoEncontradoAlimentacion.style.display = "block";
-        });
 }
+// Función para consultar la alimentación por ID
+
 
 function buscarAlimentacion() {
     ocultarTodosLosContenedores();
@@ -242,7 +214,7 @@ function buscarGanado() {
 }
 
 // Función para vincular el ID del ganado con el ID de la alimentación
-function vincularAlimentacion() {
+async function vincularAlimentacion() {
     ocultarTodosLosContenedores();
     const idGanado = document.getElementById('inputIDGanadoVincular').value;
     const idAlimentacion = document.getElementById('inputIDAlimentacionVincular').value;
@@ -254,20 +226,26 @@ function vincularAlimentacion() {
 
     // Datos para enviar en el JSON
     const datosVinculacion = {
-        idGanado: idGanado,
-        idAlimentacion: idAlimentacion
+        tabla: 'vinculacion',
+        tipo: 0,
+        cantidad: idAlimentacion,
+        fecha: 0,
+        frecuencia: 0,
+        id_usuario: idGanado,
     };
 
-    // Simulación de petición POST a la base de datos
-    fetch('URL_DEL_ENDPOINT_VINCULACION', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(datosVinculacion)
-    })
-    .then(response => response.json())
-    .then(data => {
+    try {
+        // Simulación de petición POST a la base de datos
+        const response = await fetch('http://127.0.0.1:5000/encargado/registro', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(datosVinculacion)
+        });
+
+        const data = await response.json();  // Esperar la respuesta y parsearla
+
         if (data.success) {
             document.getElementById('mensajeVinculacionExitosa').style.display = 'block';
             setTimeout(() => {
@@ -280,62 +258,62 @@ function vincularAlimentacion() {
         } else {
             alert('Error en la vinculación.');
         }
-    })
-    .catch(error => {
+
+    } catch (error) {
         console.error('Error:', error);
         alert('Error en la vinculación.');
-    });
+    }
 }
 
 function consultarAlimentacionGanado() {
-    const tablaContainer = document.getElementById('tablaAlimentacionGanadoContainer');
-    const tablaBody = document.getElementById('tablaAlimentacionGanado').querySelector('tbody');
-    const mensajeNoDatos = document.getElementById('mensajeNoDatosGanado');
+    const mensajeNoEncontradoAlimentacion = document.getElementById("mensajeNoEncontradoAlimentacionGanado");
+    const tbody = document.querySelector("#tablaAlimentacionGanado tbody");
+    const idGanado = document.getElementById("inputIDGanado").value.trim();
 
-    // Ocultar todos los contenedores antes de mostrar la tabla (opcional si tienes múltiples vistas)
-    ocultarTodosLosContenedores();
+    // Verificar que se haya ingresado el ID de ganado
+    if (!idGanado) {
+        alert("Por favor, ingresa el ID del ganado.");
+        return;
+    }
 
-    // Simulación de petición GET para consultar datos de alimentación
-    fetch('URL_DEL_ENDPOINT_CONSULTA_ALIMENTACION', {
-        method: 'GET', // Cambiar a POST si necesitas enviar parámetros
+    // Enviar solicitud POST con el ID del ganado
+    fetch("/ganadero/consultasvinculacion", {
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({ id: idGanado })  // Enviamos el ID del ganado como JSON
     })
     .then(response => response.json())
     .then(data => {
-        // Limpiar la tabla antes de mostrar nuevos datos
-        tablaBody.innerHTML = '';
+        tbody.innerHTML = ""; // Limpiar la tabla antes de llenarla
 
+        // Si la respuesta tiene datos, llenar la tabla
         if (data.length > 0) {
-            // Llenar la tabla con los datos recibidos
-            data.forEach(dato => {
-                const fila = document.createElement('tr');
-                fila.innerHTML = `
-                    <td>${dato.raza}</td>
-                    <td>${dato.idAlimentacion}</td>
-                    <td>${dato.tipo}</td>
-                    <td>${dato.cantidad} kg</td>
-                    <td>${dato.frecuencia}</td>
-                    <td>${dato.fecha}</td>
-                `;
-                tablaBody.appendChild(fila);
-            });
+            data.forEach(registro => {
 
-            mensajeNoDatos.style.display = 'none';
-            tablaContainer.style.display = 'block';
+                const fila = document.createElement("tr");
+                fila.innerHTML = `
+                    <td>${registro.id_alimentacion || "N/A"}</td>
+                    <td>${registro.tipo_alimento || "N/A"}</td>
+                    <td>${registro.cantidad || "N/A"}</td>
+                    <td>${registro.frecuencia || "N/A"}</td>
+                    <td>${registro.fecha_registro || "N/A"}</td>
+                `;
+                tbody.appendChild(fila);
+            });
+            document.getElementById("tablaAlimentacionGanado").style.display = "table";
+            mensajeNoEncontradoAlimentacion.style.display = "none";
         } else {
-            // Mostrar mensaje si no hay datos
-            mensajeNoDatos.style.display = 'block';
-            tablaContainer.style.display = 'block';
+            document.getElementById("tablaAlimentacionGanado").style.display = "none";
+            mensajeNoEncontradoAlimentacion.style.display = "block"; // Mostrar mensaje si no hay datos
         }
     })
     .catch(error => {
-        console.error('Error en la consulta:', error);
-        alert('Hubo un problema al conectar con el servidor.');
+        console.error("Error al obtener los datos de alimentación del ganado:", error);
+        mensajeNoEncontradoAlimentacion.style.display = "block";
     });
 }
-
 function mostrarEliminarAlimentacion() {
     document.getElementById('eliminarAlimentacionContainer').style.display = 'block';
 }
@@ -353,16 +331,15 @@ function eliminarAlimentacion() {
 
     // Datos para enviar en el JSON
     const datosEliminacion = {
-        idGanado: idGanado,
-        idAlimentacion: idAlimentacion
+        tabla:'vinculacion',
+        idex: idGanado,
+        id: idAlimentacion
     };
 
     // Simulación de petición POST para eliminar alimentación
-    fetch('URL_DEL_ENDPOINT_ELIMINACION', {
+    fetch('http://127.0.0.1:5000/ganadero/eliminar', {
         method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(datosEliminacion)
     })
     .then(response => response.json())
@@ -384,4 +361,8 @@ function eliminarAlimentacion() {
         console.error('Error en la eliminación:', error);
         alert('Hubo un problema al conectar con el servidor.');
     });
+}
+
+function mostrarVincularAlimentacion(){
+    document.getElementById('camposVinculacion').style.display = 'block';
 }

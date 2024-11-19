@@ -223,7 +223,7 @@ def tablasGanadero():
     return jsonify(info)
 
 @app.route('/ganadero/actualizar',methods=['POST'])
-def consultaGanadoID():
+def consultaGanaderoID():
     try:
         dato=request.get_json()
         db.consultaIDGanado(dato.get('id'))
@@ -256,6 +256,39 @@ def modificarGanadero():
         print('Error al actualizar:', str(e))  # Imprimir el error para depuración
         return jsonify({'success': False, 'message': 'Error al actualizar', 'error': str(e)}), 500
 
+
+@app.route('/ganadero/eliminar', methods=['DELETE'])
+def eliminarGanadero():
+    try:
+        dato= request.get_json()
+        info= db.eliminar(dato.get('tabla'),dato.get('id'),dato.get('idex'))
+        if info.get('success'):
+                return jsonify(info)  # Devuelve la respuesta de `actualizacionencargado()`
+        else:
+                return jsonify({'success': False, 'message': 'No se pudo actualizar el registro'}), 400
+    except Exception as e:   
+        print('Error al actualizar:', str(e))  # Imprimir el error para depuración
+        return jsonify({'success': False, 'message': 'Error al actualizar', 'error': str(e)}), 500
+
+
+@app.route('/ganadero/consultasvinculacion', methods=['POST'])
+def consultarVinculacionGanadero():
+    if not request.is_json:
+        return jsonify({"error": "La solicitud debe ser de tipo JSON"}), 400  # Respuesta en caso de que no sea JSON
+
+    dato = request.get_json()
+    print(dato)
+    id_ganado = dato.get('id')  # Extraemos el id del ganado enviado en la solicitud
+
+    # Llamar a la función que consulta la base de datos
+    info = db.consultar_alimentacion_ganado(id_ganado)
+
+    # Si la consulta no devuelve datos, manejamos ese caso
+    if not info:
+        return jsonify({"error": "No se encontraron datos"}), 404
+    
+    # Si se encontraron datos, los devolvemos en formato JSON
+    return jsonify(info)
 
 @app.route('/ganadero/alimentacion')
 def ganaderoalimentacion():

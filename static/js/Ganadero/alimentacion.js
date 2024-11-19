@@ -54,19 +54,41 @@ btnModificar.addEventListener('click', () => mostrarSeccion('modificar'));
 
 // Función para registrar un nuevo alimento
 btnGuardarAlimentacion.addEventListener('click', () => {
+    // Obtener la fecha y hora actual
+    const fechaActual = new Date();
+
+    // Formatear la fecha en un formato más legible (por ejemplo, YYYY-MM-DD)
+    const anio = fechaActual.getFullYear();
+    const mes = String(fechaActual.getMonth() + 1).padStart(2, '0'); // getMonth() devuelve un valor de 0 a 11, por lo que se le suma 1
+    const dia = String(fechaActual.getDate()).padStart(2, '0');
+
+    const fechaFormateada = `${anio}-${mes}-${dia}`;
+
+    // Si necesitas incluir la hora también
+    const horas = String(fechaActual.getHours()).padStart(2, '0');
+    const minutos = String(fechaActual.getMinutes()).padStart(2, '0');
+    const segundos = String(fechaActual.getSeconds()).padStart(2, '0');
+
+    const fechaHoraFormateada = `${fechaFormateada} ${horas}:${minutos}:${segundos}`;
+    
     const tipoAlimento = document.getElementById('tipoAlimento').value;
     const cantidadAlimento = document.getElementById('cantidadAlimento').value;
     const frecuenciaAlimento = document.getElementById('frecuenciaAlimento').value;
 
+    console.log(fechaHoraFormateada); // Imprime la fecha y hora en el formato YYYY-MM-DD HH:MM:SS
+
     if (tipoAlimento && cantidadAlimento && frecuenciaAlimento) {
         const nuevoRegistro = {
+            tabla: 'alimentacion',
             tipo: tipoAlimento,
             cantidad: parseInt(cantidadAlimento),
-            frecuencia: frecuenciaAlimento
+            fecha: fechaHoraFormateada,  // Usar la fecha con hora
+            frecuencia: frecuenciaAlimento,
+            id_usuario: 2
         };
 
-        // Petición simulada al backend para registrar un nuevo alimento
-        fetch('/api/registrarAlimento', {
+        // Realizar la solicitud POST al backend
+        fetch('http://127.0.0.1:5000/ganadero/registrar', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -92,36 +114,43 @@ btnGuardarAlimentacion.addEventListener('click', () => {
 });
 
 // Función para consultar registros
-function consultarRegistrosAlimentacion() {
-    fetch('/api/consultarAlimentos')
-        .then(response => response.json())
-        .then(data => {
-            tablaAlimentacion.innerHTML = ''; // Limpiar la tabla
-
-            if (data.length === 0) {
-                mensajeNoEncontradoAlimentacion.style.display = 'block';
-                return;
-            }
-
-            mensajeNoEncontradoAlimentacion.style.display = 'none';
-
-            data.forEach(registro => {
-                const fila = document.createElement('tr');
-                fila.innerHTML = `
-                    <td>${registro.id || 'N/A'}</td>
-                    <td>${registro.tipo || 'N/A'}</td>
-                    <td>${registro.cantidad || 'N/A'}</td>
-                    <td>${registro.frecuencia || 'N/A'}</td>
-                    <td>${registro.fecha || 'N/A'}</td>
-                `;
-                tablaAlimentacion.appendChild(fila);
-            });
-        })
-        .catch(error => {
-            console.error('Error al consultar los registros:', error);
-            mensajeNoEncontradoAlimentacion.style.display = 'block';
+async function consultarRegistrosAlimentacion() {
+    try {
+        const userData = { name: 'alimentacion' };
+        const response = await fetch('http://127.0.0.1:5000/ganadero/consultas', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
         });
+        const data = await response.json();
+
+        tablaAlimentacion.innerHTML = ''; // Limpiar la tabla
+        if (data.length === 0) {
+            mensajeNoEncontradoAlimentacion.style.display = 'block';
+            return;
+        }
+
+        mensajeNoEncontradoAlimentacion.style.display = 'none';
+
+        data.forEach(registro => {
+            const fila = document.createElement('tr');
+            fila.innerHTML = `
+                <td>${registro.id_alimentacion || 'N/A'}</td>
+                <td>${registro.tipo_alimento || 'N/A'}</td>
+                <td>${registro.cantidad || 'N/A'}</td>
+                <td>${registro.frecuencia || 'N/A'}</td>
+                <td>${registro.fecha_registro || 'N/A'}</td>
+            `;
+            tablaAlimentacion.appendChild(fila);
+        });
+    } catch (error) {
+        console.error('Error al consultar los registros:', error);
+        mensajeNoEncontradoAlimentacion.style.display = 'block';
+    }
 }
+
 
 // Función para limpiar los inputs después de registrar
 function limpiarInputs() {
@@ -138,6 +167,7 @@ btnModificarAlimentacion.addEventListener('click', () => {
     const nuevaFrecuencia = document.getElementById('nuevaFrecuenciaAlimento').value;
 
     const datosModificacion = {
+        tabla: 'alimentacion',
         id: idModificar,
         nuevoTipo: nuevoTipo || null,
         nuevaCantidad: nuevaCantidad ? parseInt(nuevaCantidad) : null,
@@ -145,7 +175,7 @@ btnModificarAlimentacion.addEventListener('click', () => {
     };
 
     // Petición simulada al backend para modificar un alimento
-    fetch('/api/modificarAlimento', {
+    fetch('http://127.0.0.1:5000/ganadero/actualizar', {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -184,7 +214,7 @@ function volverAlMenu() {
         ocultarTodosLosContenedores();
     } else {
         // Si ya están ocultos, redirige al menú principal
-        window.location.href = "/Ganadero.html";
+        window.location.href = "http://127.0.0.1:5000/ganadero";
     }
 }
 
@@ -229,12 +259,16 @@ function eliminarAlimento() {
                 alert('Por favor, ingrese un ID válido.');
                 return;
             }
-
-            if (confirm('¿Está seguro de que desea eliminar el alimento con ID ' + idAlimento + '?')) {
+            const data={
+                tabla:'alimentacion',
+                id: parseInt(idAlimento)
+            }
+            if (confirm('¿Está seguro de que desea eliminar el alimento con ID ' + idAlimento + '? ¡Con esto tabmien eliminara la vinculacion de alimentacion que tiene el ganado!')) {
                 // Simular eliminación con fetch
-                fetch(`URL_DEL_ENDPOINT_ALIMENTO/${idAlimento}`, {
+                fetch('http://127.0.0.1:5000/ganadero/eliminar', {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
                 })
                 .then(response => response.json())
                 .then(data => {

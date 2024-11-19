@@ -43,7 +43,7 @@ function volverAlMenu() {
 
     if (!algunContenedorVisible) {
         // Si no hay contenedores visibles, redirigir a Encargado.html
-        window.location.href = "/Encargado.html";
+        window.location.href = "http://127.0.0.1:5000/ganadero";
     }
 }
 
@@ -55,25 +55,46 @@ function registrarAlertaAgua() {
     // Obtener el valor del input
     const nivelAgua = document.getElementById('inputNivelAgua').value;
 
+        // Obtener la fecha y hora actual
+        const fechaActual = new Date();
+
+        // Formatear la fecha en un formato más legible (por ejemplo, YYYY-MM-DD)
+        const anio = fechaActual.getFullYear();
+        const mes = String(fechaActual.getMonth() + 1).padStart(2, '0'); // getMonth() devuelve un valor de 0 a 11, por lo que se le suma 1
+        const dia = String(fechaActual.getDate()).padStart(2, '0');
+    
+        const fechaFormateada = `${anio}-${mes}-${dia}`;
+    
+        // Si necesitas incluir la hora también
+        const horas = String(fechaActual.getHours()).padStart(2, '0');
+        const minutos = String(fechaActual.getMinutes()).padStart(2, '0');
+        const segundos = String(fechaActual.getSeconds()).padStart(2, '0');
+    
+        const fechaHoraFormateada = `${fechaFormateada} ${horas}:${minutos}:${segundos}`;
+        
     // Validar si el valor está vacío o no es un número válido
     if (!nivelAgua || isNaN(nivelAgua) || nivelAgua <= 0) {
         alert('Por favor, ingrese un nivel de agua válido.');
         return; // Detiene el proceso si el valor no es válido
     }
 
-    // Crear el objeto de datos para enviar al backend
-    const alertaData = {
-        nivelAgua: parseFloat(nivelAgua),
-        fecha: new Date().toISOString() // Registrar la fecha de la alerta
+    // Crear el objeto de datos para enviar al backenf
+    const nuevoRegistro = {
+        tabla: 'alertas',
+        tipo: parseFloat(nivelAgua),
+        //AQUI
+        cantidad: 'activa',
+        fecha: fechaHoraFormateada,  // Usar la fecha con hora
+        frecuencia: 0,
+        id_usuario: 1
     };
-
     // Enviar los datos al servidor utilizando fetch y JSON
-    fetch('URL_DEL_ENDPOINT_DE_ALERTA', {
+    fetch('http://127.0.0.1:5000/ganadero/registrar', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(alertaData)
+        body: JSON.stringify(nuevoRegistro)
     })
     .then(response => response.json())
     .then(data => {
@@ -90,7 +111,8 @@ function registrarAlertaAgua() {
     });
 }
 
-function consultarAlertasActivas() {
+
+async function consultarAlertasActivas() {
     const tablaAlertas = document.getElementById('tablaAlertasActivas');
     const contenedorAlertas = document.getElementById('contenedorAlertasActivas');
     contenedorAlertas.style.display = 'block'; // Mostrar el contenedor
@@ -102,42 +124,43 @@ function consultarAlertasActivas() {
         </tr>
     `;
 
-    // Simular consulta al backend
-    fetch('URL_DEL_ENDPOINT_DE_ALERTAS_ACTIVAS') // Reemplaza con tu URL del backend
-        .then(response => response.json())
-        .then(data => {
-            // Limpiar la tabla de alertas
-            tablaAlertas.innerHTML = '';
+    try {
+        // Simular consulta al backend
+        const response = await fetch('http://127.0.0.1:5000/encargado/consultaestado'); // Reemplaza con tu URL del backend
+        const data = await response.json();
 
-            if (data.alertas && data.alertas.length > 0) {
-                // Recorrer las alertas y agregarlas a la tabla
-                data.alertas.forEach(alerta => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${alerta.id}</td>
-                    `;
-                    tablaAlertas.appendChild(row);
-                });
-            } else {
-                // Mostrar mensaje si no hay alertas activas
-                tablaAlertas.innerHTML = `
-                    <tr>
-                        <td class="alerta-vacia">Información no registrada.</td>
-                    </tr>
+        // Limpiar la tabla de alertas
+        tablaAlertas.innerHTML = '';
+        console.log(data[0].estado_alerta)
+        if (data[0].estado_alerta.length> 0) {
+            // Recorrer las alertas y agregarlas a la tabla
+            data.forEach(alerta => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${alerta.id_alerta}</td>
+                    <td>${alerta.estado_alerta}</td>
                 `;
-            }
-        })
-        .catch(error => {
-            console.error('Error al consultar alertas activas:', error);
+                tablaAlertas.appendChild(row);
+            });
+        } else {
+            // Mostrar mensaje si no hay alertas activas
             tablaAlertas.innerHTML = `
                 <tr>
-                    <td class="alerta-error">Error al cargar las alertas activas.</td>
+                    <td class="alerta-vacia">Información no registrada.</td>
                 </tr>
             `;
-        });
+        }
+    } catch (error) {
+        console.error('Error al consultar alertas activas:', error);
+        tablaAlertas.innerHTML = `
+            <tr>
+                <td class="alerta-error">Error al cargar las alertas activas.</td>
+            </tr>
+        `;
+    }
 }
 
-function consultarHistorialAlertas() {
+async function consultarHistorialAlertas() {
     const tablaHistorial = document.getElementById('tablaHistorialAlertas');
     const contenedorHistorial = document.getElementById('contenedorHistorialAlertas');
     contenedorHistorial.style.display = 'block'; // Mostrar el contenedor
@@ -148,44 +171,50 @@ function consultarHistorialAlertas() {
             <td colspan="5" class="alerta-cargando">Cargando historial de alertas...</td>
         </tr>
     `;
+    const userData = { name: 'alertas_agua' };
+    try {
+        // Simular consulta al backend
+        const response = await fetch('http://127.0.0.1:5000/encargado/consultas', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
+        }); // Reemplaza con tu URL del backend
+        const data = await response.json();
 
-    // Simular consulta al backend
-    fetch('URL_DEL_ENDPOINT_DEL_HISTORIAL') // Reemplaza con tu URL del backend
-        .then(response => response.json())
-        .then(data => {
-            // Limpiar la tabla
-            tablaHistorial.innerHTML = '';
+        // Limpiar la tabla
+        tablaHistorial.innerHTML = '';
 
-            if (data.alertas && data.alertas.length > 0) {
-                // Recorrer las alertas y agregarlas a la tabla
-                data.alertas.forEach(alerta => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${alerta.id}</td>
-                        <td>${alerta.nivel_agua}</td>
-                        <td>${new Date(alerta.fecha).toLocaleDateString()}</td>
-                        <td>${alerta.id_usuario}</td>
-                        <td>${alerta.estado}</td>
-                    `;
-                    tablaHistorial.appendChild(row);
-                });
-            } else {
-                // Mostrar mensaje si no hay alertas registradas
-                tablaHistorial.innerHTML = `
-                    <tr>
-                        <td colspan="5" class="alerta-vacia">No hay alertas registradas.</td>
-                    </tr>
+        if (data[0].estado_alerta.length > 0) {
+            // Recorrer las alertas y agregarlas a la tabla
+            data.forEach(alerta => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${alerta.id_alerta}</td>
+                    <td>${alerta.nivel_agua}</td>
+                    <td>${alerta.fecha_alerta}</td>
+                    <td>${alerta.id_usuario}</td>
+                    <td>${alerta.estado_alerta}</td>
                 `;
-            }
-        })
-        .catch(error => {
-            console.error('Error al consultar el historial de alertas:', error);
+                tablaHistorial.appendChild(row);
+            });
+        } else {
+            // Mostrar mensaje si no hay alertas registradas
             tablaHistorial.innerHTML = `
                 <tr>
-                    <td colspan="5" class="alerta-error">Error al cargar el historial de alertas.</td>
+                    <td colspan="5" class="alerta-vacia">No hay alertas registradas.</td>
                 </tr>
             `;
-        });
+        }
+    } catch (error) {
+        console.error('Error al consultar el historial de alertas:', error);
+        tablaHistorial.innerHTML = `
+            <tr>
+                <td colspan="5" class="alerta-error">Error al cargar el historial de alertas.</td>
+            </tr>
+        `;
+    }
 }
 // Función para mostrar el contenedor de ingreso de ID de alerta
 function mostrarResolverAlerta() {
@@ -225,7 +254,7 @@ function resolverEstadoAlerta(estado) {
     };
 
     // Enviar datos al backend utilizando fetch y JSON
-    fetch('URL_DEL_ENDPOINT_RESOLVER_ALERTA', {
+    fetch('http://127.0.0.1:5000/encargado/alertascambio', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -258,7 +287,7 @@ function mostrarContenedorModificarAlerta() {
 }
 
 // Lógica para validar y modificar la alerta
-document.getElementById('btnModificarAlerta').addEventListener('click', function () {
+function modificarAlerta(){
     // Obtener los valores ingresados por el usuario
     const idAlerta = document.getElementById('inputIdAlertaModificar').value.trim();
     const nuevoNivelAgua = document.getElementById('inputNuevoNivelAgua').value.trim();
@@ -266,13 +295,15 @@ document.getElementById('btnModificarAlerta').addEventListener('click', function
 
     // Crear el objeto de datos para enviar al backend
     const datosModificacion = {
-        idAlerta: parseInt(idAlerta),
-        nivelAgua: parseFloat(nuevoNivelAgua),
-        estado: nuevoEstado,
+        tabla: 'alertas',
+        id: parseInt(idAlerta),
+        nuevoTipo: parseFloat(nuevoNivelAgua),
+        nuevaCantidad: nuevoEstado,
+        nuevaFrecuencia:null
     };
 
     // Enviar datos al backend con fetch
-    fetch('URL_DEL_ENDPOINT_DE_MODIFICACION', {
+    fetch('http://127.0.0.1:5000/encargado/actualizar', {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -291,4 +322,4 @@ document.getElementById('btnModificarAlerta').addEventListener('click', function
                 alert('Hubo un error al modificar la alerta. Por favor, intente nuevamente.');
             }
         })
-});
+}

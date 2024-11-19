@@ -175,7 +175,7 @@ function consultarGanado() {
                         <td>${ganado.edad}</td>
                         <td>${ganado.peso}</td>
                         <td>${ganado.estado}</td>
-                        <td>${ganado.id_usuario}</td>
+                        <td>${ganado.id_ganado}</td>
                     `;
                     tablaGanado.appendChild(fila);
                 });
@@ -324,11 +324,17 @@ function eliminarGanado() {
                 return;
             }
 
-            if (confirm('¿Está seguro de que desea eliminar el ganado con ID ' + idGanado + '?')) {
+            if (confirm('¿Está seguro de que desea eliminar el ganado con ID ' + idGanado + '?, ¡Con esto tabmien eliminara la vinculacion de alimentacion!')) {
                 // Simular eliminación con fetch
-                fetch(`URL_DEL_ENDPOINT_GANADO/${idGanado}`, {
+                const data={
+                    tabla:'ganado',
+                    id: parseInt(idGanado)
+                }
+
+                fetch('http://127.0.0.1:5000/ganadero/eliminar', {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
                 })
                 .then(response => response.json())
                 .then(data => {
