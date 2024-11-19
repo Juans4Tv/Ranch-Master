@@ -160,6 +160,18 @@ def encargadoAlimentacionGrupo():
 def alertas():
     return render_template('/encargado/alertasAguaE.html')
 
+@app.route('/encargado/alertascambio', methods=['POST'])
+def cambioAlertas():
+    try:
+        dato= request.get_json()
+        info= db.cambioAlerta(dato.get('idAlerta'),dato.get('estado'))
+        if info.get('success'):
+                return jsonify(info)  # Devuelve la respuesta de `actualizacionencargado()`
+        else:
+                return jsonify({'success': False, 'message': 'No se pudo actualizar el registro'}), 400
+    except Exception as e:   
+        print('Error al actualizar:', str(e))  # Imprimir el error para depuración
+        return jsonify({'success': False, 'message': 'Error al actualizar', 'error': str(e)}), 500
 
 #Datos del ganadero e informacion de este mismo
 #numeros de sesiones del encargados

@@ -255,7 +255,7 @@ function resolverEstadoAlerta(estado) {
     };
 
     // Enviar datos al backend utilizando fetch y JSON
-    fetch('URL_DEL_ENDPOINT_RESOLVER_ALERTA', {
+    fetch('http://127.0.0.1:5000/encargado/alertascambio', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

@@ -101,7 +101,7 @@ def actualizacionencargado(tabla, tipo_agua, cantidad_estado, frecuencia, id):
         mysql.connection.commit()
         
         if cur.rowcount > 0:
-            resultado = {'success': True, 'message': 'Registro modificado correctamente'}
+            resultado = {'success': True, 'message': 'actualizacion modificado correctamente'}
         else:
             resultado = {'success': False, 'message': 'No se encontró un registro con el ID proporcionado'}
         
@@ -113,6 +113,20 @@ def actualizacionencargado(tabla, tipo_agua, cantidad_estado, frecuencia, id):
     finally:
         cur.close()
 
+def cambioAlerta(id,estado):
+    cur= mysql.connection.cursor()
+    query="""UPDATE alertas_agua 
+            SET estado_alerta = COALESCE(%s, estado_alerta) 
+                WHERE id_alerta = %s"""
+    cur.execute(query,(estado,id))
+    mysql.connection.commit()
+            
+    if cur.rowcount > 0:
+            resultado = {'success': True, 'message': 'actualizacion modificado correctamente'}
+    else:
+            resultado = {'success': False, 'message': 'No se encontró un registro con el ID proporcionado'}
+    cur.close()
+    return resultado
 
 def datosEncargado():
     tablas = ["ganado", "alimentacion", "alertas_agua"]
