@@ -46,7 +46,7 @@ def pagenca():
 
 @app.route('/api/encargado')
 def datoEncargado():
-    info = db.datosEncargado()
+    info = db.datosGenerales()
     data={
         "ganado":info[0],
         "alimentacion":info[1],
@@ -54,13 +54,22 @@ def datoEncargado():
     }
     return jsonify(data)
 
+@app.route('/api/ganadero')
+def datoGanadero():
+    info = db.datosGenerales()
+    data={
+        "ganado":info[0],
+        "alimentacion":info[1],
+        "alertas": info[2]
+    }
+    return jsonify(data)
 
 @app.route('/encargado/ganado')
 def encargadoGanado():
     return render_template('/encargado/ganadoE.html')
 
 @app.route('/encargado/consultas', methods=["POST"])
-def tablas():
+def tablasEncargado():
     if not request.is_json:
         return jsonify({"error": "La solicitud debe ser de tipo JSON"}), 400  # Respuesta en caso de que no sea JSON
 
@@ -107,14 +116,14 @@ def consultaEstadoAgua():
 
 
 @app.route('/encargado/registro', methods=["POST"])
-def registros():
+def registrosEncargado():
     try:
         # Usar el método correcto para obtener el JSON
         dato = request.get_json()
         print(dato)
         
         # Llamada a la función que maneja la inserción en la base de datos
-        db.registroencargado(dato.get('tabla'), dato.get('tipo'), dato.get('cantidad'), dato.get('frecuencia'), dato.get('fecha'), dato.get('id_usuario'))
+        db.registro(dato.get('tabla'), dato.get('tipo'), dato.get('cantidad'), dato.get('frecuencia'), dato.get('fecha'), dato.get('id_usuario'))
 
         # Devolver una respuesta adecuada
         return jsonify({'success': True, 'message': ' registrado con éxito'})
@@ -124,11 +133,11 @@ def registros():
 
 
 @app.route('/encargado/actualizar', methods=['PUT'])
-def modificar():
+def modificarEncargado():
     try:    
         dato = request.get_json()
         print('Datos recibidos en el servidor:', dato)  # Depuración
-        info = db.actualizacionencargado(
+        info = db.actualizacion(
             dato.get('tabla'),
             dato.get('nuevoTipo'),
             dato.get('nuevaCantidad'),
@@ -182,6 +191,71 @@ def pagenaca():
 @app.route('/ganadero/ganado')
 def ganaderoganado():
     return render_template('/Ganadero/ganado.html')
+
+@app.route('/ganadero/registrar', methods=["POST"])
+def ganaderoregistro():
+    try:
+        # Usar el método correcto para obtener el JSON
+        dato = request.get_json()
+        print(dato)
+        
+        # Llamada a la función que maneja la inserción en la base de datos
+        db.registro(dato.get('tabla'), dato.get('tipo'), dato.get('cantidad'), dato.get('frecuencia'), dato.get('fecha'), dato.get('id_usuario'))
+
+        # Devolver una respuesta adecuada
+        return jsonify({'success': True, 'message': ' registrado con éxito'})
+    
+    except Exception as e:
+        return jsonify({'success': False, 'message': 'Error al registrar', 'error': str(e)}), 500
+
+@app.route('/ganadero/consultas', methods=["POST"])
+def tablasGanadero():
+    if not request.is_json:
+        return jsonify({"error": "La solicitud debe ser de tipo JSON"}), 400  # Respuesta en caso de que no sea JSON
+
+    dato = request.json
+    info = db.consulta(dato.get('name'))
+    
+    # Si la consulta no devuelve datos, maneja ese caso
+    if not info:
+        return jsonify({"error": "No se encontraron datos"}), 404
+    
+    return jsonify(info)
+
+@app.route('/ganadero/actualizar',methods=['POST'])
+def consultaGanadoID():
+    try:
+        dato=request.get_json()
+        db.consultaIDGanado(dato.get('id'))
+        return jsonify({'success': True, 'message': ' Consultado con éxito'})
+    except Exception as e:
+        print('Error al actualizar:', str(e))
+        return jsonify({'success': False, 'message': 'Error al Encontrarlo', 'error': str(e)}), 500
+
+@app.route('/ganadero/actualizar', methods=['PUT'])
+def modificarGanadero():
+    try:    
+        dato = request.get_json()
+        print('Datos recibidos en el servidor:', dato)  # Depuración
+        info = db.actualizacion(
+            dato.get('tabla'),
+            dato.get('nuevoTipo'),
+            dato.get('nuevaCantidad'),
+            dato.get('nuevaFrecuencia'),
+            dato.get('id'),
+            dato.get('estadoser')
+        )
+
+        # Asegúrate de que `info` contenga lo que quieres devolver.
+        if info.get('success'):
+            return jsonify(info)  # Devuelve la respuesta de `actualizacionencargado()`
+        else:
+            return jsonify({'success': False, 'message': 'No se pudo actualizar el registro'}), 400
+
+    except Exception as e:
+        print('Error al actualizar:', str(e))  # Imprimir el error para depuración
+        return jsonify({'success': False, 'message': 'Error al actualizar', 'error': str(e)}), 500
+
 
 @app.route('/ganadero/alimentacion')
 def ganaderoalimentacion():

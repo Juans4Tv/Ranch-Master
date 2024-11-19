@@ -51,7 +51,7 @@ def consultar_estado():
 
 
 
-def registroencargado(tabla,tipo_agua,cantidad_estado,frecuencia,fecha,id_usuario):
+def registro(tabla,tipo_agua,cantidad_estado,frecuencia,fecha,id_usuario):
     cur = mysql.connection.cursor()
     if tabla == 'alimentacion':
         query= "INSERT INTO alimentacion (tipo_alimento,cantidad,frecuencia,fecha_registro,id_usuario) VALUES (%s,%s,%s,%s,%s)"
@@ -61,7 +61,10 @@ def registroencargado(tabla,tipo_agua,cantidad_estado,frecuencia,fecha,id_usuari
         cur.execute(query, (tipo_agua,fecha,id_usuario,cantidad_estado))
     elif tabla == 'vinculacion':
         query= "INSERT INTO alimentacion_ganado (id_ganado,id_alimentacion) VALUES (%s,%s)"
-        cur.execute(query, (id_usuario,cantidad_estado))        
+        cur.execute(query, (id_usuario,cantidad_estado))
+    elif tabla == 'ganado':
+         query="INSERT INTO ganado (raza,edad,peso,estado,id_usuario) VALUES (%s,%s,%s,%s,%s)"
+         cur.execute(query,(tipo_agua,cantidad_estado,frecuencia,fecha,id_usuario))        
     
     if cur.rowcount > 0:
         resultado = {'message': 'Dato insertado exitosamente'}
@@ -72,7 +75,7 @@ def registroencargado(tabla,tipo_agua,cantidad_estado,frecuencia,fecha,id_usuari
     cur.close()
     return resultado
      
-def actualizacionencargado(tabla, tipo_agua, cantidad_estado, frecuencia, id):
+def actualizacion(tabla, tipo_agua, cantidad_estado, frecuencia, id,estadoser='null'):
     try:
         cur = mysql.connection.cursor()
         if tabla == 'alimentacion':
@@ -97,6 +100,18 @@ def actualizacionencargado(tabla, tipo_agua, cantidad_estado, frecuencia, id):
             print("Ejecutando consulta:", query)  # Depuración
             print("Valores:", (tipo_agua, cantidad_estado, id))  # Depuración
             cur.execute(query, (tipo_agua, cantidad_estado, id))
+        elif tabla=='ganado':
+            query = """
+                UPDATE ganado
+                SET raza = COALESCE(%s, raza), 
+                    edad = COALESCE(%s, edad),
+                    peso = COALESCE(%s, peso),
+                    estado = COALESCE(%s, estado)
+                WHERE id_ganado = %s
+            """
+            print("Ejecutando consulta:", query)  # Depuración
+            print("Valores:", (tipo_agua, cantidad_estado,frecuencia,estadoser,id))  # Depuración
+            cur.execute(query, (tipo_agua, cantidad_estado,frecuencia,estadoser,id))           
         
         mysql.connection.commit()
         
@@ -128,7 +143,7 @@ def cambioAlerta(id,estado):
     cur.close()
     return resultado
 
-def datosEncargado():
+def datosGenerales():
     tablas = ["ganado", "alimentacion", "alertas_agua"]
     consultar = []
     cur = mysql.connection.cursor()
@@ -142,4 +157,14 @@ def datosEncargado():
     cur.close()
     return consultar
 
+
+
+#consultas propias del ganadero
+def consultaIDGanado(id):
+    cur = mysql.connection.cursor()
+    query="""select id_ganado from ganado where id_ganado=%s"""
+    cur.execute(query,(id,))
+    account= cur.fetchone()
+    cur.close()
+    return account
 

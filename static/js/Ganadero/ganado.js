@@ -26,7 +26,7 @@ function volverAlMenu() {
 
     if (contenedorTabla && contenedorTabla.classList.contains("d-none")) {
         // Si la tabla está oculta, redirigir a la página principal
-        window.location.href = "/Ganadero.html";
+        window.location.href = "http://127.0.0.1:5000/ganadero";
     } else {
         // Si la tabla está visible, ocultarla
         if (contenedorTabla) {
@@ -94,14 +94,16 @@ function registrarGanado() {
 
         // Crear el objeto de datos para enviar al servidor
         const ganadoData = {
-            raza: raza,
-            edad: parseInt(edad, 10),
-            peso: parseFloat(peso),
-            estadoSalud: estadoSalud
+            tabla:'ganado',
+            tipo: raza,
+            cantidad: parseInt(edad, 10),
+            frecuencia: parseFloat(peso),
+            fecha: estadoSalud,
+            id_usuario: 1
         };
 
         // Enviar los datos al servidor utilizando fetch y JSON
-        fetch('URL_DEL_ENDPOINT_GANADO', {
+        fetch('http://127.0.0.1:5000/ganadero/registrar', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -138,9 +140,17 @@ function consultarGanado() {
     if (contenedorTabla) {
         contenedorTabla.classList.add("d-none");
     }
-
+    const ganadoData={
+        name:'ganado'
+    }
     // Solicitud de datos de ganado desde JSON o API
-    fetch('/ruta/a/tu/archivo/ganado.json')
+    fetch('http://127.0.0.1:5000/ganadero/consultas', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(ganadoData)
+    })
         .then(response => response.json())
         .then(datosGanado => {
             // Limpiar el contenido de la tabla antes de llenarla
@@ -165,7 +175,7 @@ function consultarGanado() {
                         <td>${ganado.edad}</td>
                         <td>${ganado.peso}</td>
                         <td>${ganado.estado}</td>
-                        <td>${ganado.idUsuario}</td>
+                        <td>${ganado.id_usuario}</td>
                     `;
                     tablaGanado.appendChild(fila);
                 });
@@ -212,12 +222,20 @@ function modificarGanado() {
             alert('Por favor, ingrese un ID válido.');
             return;
         }
-
+        const data={
+            id:idGanado
+        }
         // Llamada para buscar el ganado en la base de datos mediante el ID
-        fetch(`URL_DEL_ENDPOINT_GANADO/${idGanado}`)
+        fetch('http://127.0.0.1:5000/ganadero/actualizar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
             .then(response => response.json())
             .then(data => {
-                if (data && data.found) {
+                if (data && data.success) {
                     // Mostrar inputs para modificar datos si se encuentra el ganado
                     document.getElementById('filaModificarRaza').style.display = '';
                     document.getElementById('filaModificarEdad').style.display = '';
@@ -242,6 +260,7 @@ function modificarGanado() {
 
     // Guardar cambios
     document.getElementById('btnGuardarCambiosGanado').onclick = function () {
+        const idGanado = document.getElementById('idGanado').value.trim();
         const raza = document.getElementById('modificarRazaGanado').value.trim();
         const edad = document.getElementById('modificarEdadGanado').value.trim();
         const peso = document.getElementById('modificarPesoGanado').value.trim();
@@ -249,13 +268,16 @@ function modificarGanado() {
 
         // Crear objeto con datos a actualizar (solo enviar valores si están presentes)
         const datosModificados = {};
-        if (raza) datosModificados.raza = raza;
-        if (edad) datosModificados.edad = parseInt(edad, 10);
-        if (peso) datosModificados.peso = parseFloat(peso);
-        if (estadoSalud) datosModificados.estadoSalud = estadoSalud;
+        datosModificados.tabla='ganado'
+        datosModificados.id=idGanado
+        if (raza) datosModificados.nuevoTipo = raza;
+        if (edad) datosModificados.nuevaCantidad = parseInt(edad, 10);
+        if (peso) datosModificados.nuevaFrecuencia = parseFloat(peso);
+        if (estadoSalud) datosModificados.estadoser = estadoSalud;
+
 
         // Enviar datos modificados al servidor
-        fetch(`URL_DEL_ENDPOINT_GANADO/${document.getElementById('idGanado').value}`, {
+        fetch('http://127.0.0.1:5000/ganadero/actualizar', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
